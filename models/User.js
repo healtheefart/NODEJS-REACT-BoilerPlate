@@ -9,7 +9,7 @@ const userSchema = mongoose.Schema({
         type: String,
         trim: true, 
         // 공백지우기
-        unique,
+        unique: true,
         // only one
     },
     password: {
