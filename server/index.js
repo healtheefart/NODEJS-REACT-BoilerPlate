@@ -1,6 +1,5 @@
 const express = require('express')
 const app = express()
-const port = 5000
 const mongoose = require('mongoose')
 const {User} = require('./models/User')
 const config = require('./config/key')
@@ -23,10 +22,11 @@ app.use(cookieParser())
 app.get('/', (req, res) => {
   res.send('Hello World! 안녕하세요 여러분')
 })
+
 app.get('/api/users/auth', auth, (req, res) => {
   // 여기까지 미들웨어를 통과해왔다는 건 Authentication=true라는 말
   res.status(200).json({
-    id: user._id,
+    id: req.user._id,
     isAdmin: req.user.role === 0 ? false : true,  //role=0이면 일반유저, 0아니면 관리자
     isAuth: true,
     email: req.user.email,
@@ -46,7 +46,7 @@ app.get('/api/users/logout', auth, (req, res) => {
       })
     })
 })
-
+app.get('/api/hello', (req, res) => res.send('Hello World!~~ '))
 
 app.post('/api/users/register', (req, res) => {
   
@@ -54,8 +54,8 @@ app.post('/api/users/register', (req, res) => {
   
   user.save((err, userInfo) => {  // save(): mongodb 메서드
   
-    if(err) return res.json({ success: false, err })
-    return res.status(200).json({success: true})
+    if(err) return res.json({ registerSuccess: false, err })
+    return res.status(200).json({ registerSuccess: true })
 
   })
 
@@ -84,6 +84,8 @@ app.post('/api/users/login', (req, res) => {
     })
   })
 
+  
+const port = 5000
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
